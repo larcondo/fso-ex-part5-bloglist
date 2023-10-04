@@ -13,9 +13,9 @@ const App = () => {
   const blogFormRef = useRef()
 
   const fetchAllBlogs = () => {
-    blogService.getAll().then(blogs => setBlogs( blogs )) 
+    blogService.getAll().then(blogs => setBlogs( blogs ))
   }
-  
+
   useEffect(fetchAllBlogs, [])
 
   useEffect(() => {
@@ -88,11 +88,11 @@ const App = () => {
 
       <Notification message={errorMessage} />
 
-      { user && 
-        <p>{user.name} logged in <button onClick={handleLogout}>logout</button></p>        
+      { user &&
+        <p>{user.name} logged in <button onClick={handleLogout}>logout</button></p>
       }
 
-      { user && 
+      { user &&
         <Togglable buttonLabel='new blog' ref={blogFormRef} >
           <BlogForm createNewBlog={createNewBlog} />
         </Togglable>
@@ -101,7 +101,7 @@ const App = () => {
       {blogs
         .sort((a, b) => b.likes - a.likes)
         .map(blog =>
-          <Blog 
+          <Blog
             key={blog.id}
             blog={blog}
             updateLikes={updateLikes}

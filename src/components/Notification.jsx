@@ -1,5 +1,7 @@
+import PropTypes from 'prop-types'
+
 const Notification = ({ message }) => {
-  
+
   if (!message) return null
 
   const errorStyle = {
@@ -11,12 +13,16 @@ const Notification = ({ message }) => {
     marginBottom: '10px',
     fontSize: '20px'
   }
-  
+
   return(
     <div style={errorStyle}>
       { message.text }
     </div>
   )
+}
+
+Notification.propTypes = {
+  message: PropTypes.object
 }
 
 export default Notification
