@@ -4,6 +4,7 @@ import blogService from './services/blogs'
 import LoginForm from './components/LoginForm'
 import BlogForm from './components/BlogForm'
 import Notification from './components/Notification'
+import Togglable from './components/Togglable'
 
 const App = () => {
   const [user, setUser] = useState(null)
@@ -45,11 +46,13 @@ const App = () => {
       }
 
       { user && 
-        <BlogForm 
-          fetchAllBlogs={fetchAllBlogs} 
-          user={user}
-          setErrorMessage={setErrorMessage}
-        /> 
+        <Togglable buttonLabel={'new note'}>
+          <BlogForm 
+            fetchAllBlogs={fetchAllBlogs} 
+            user={user}
+            setErrorMessage={setErrorMessage}
+          />
+        </Togglable>
       }
 
       {blogs.map(blog =>
