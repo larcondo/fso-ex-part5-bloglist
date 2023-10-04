@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import Blog from './components/Blog'
 import blogService from './services/blogs'
 import LoginForm from './components/LoginForm'
@@ -10,14 +10,13 @@ const App = () => {
   const [user, setUser] = useState(null)
   const [blogs, setBlogs] = useState([])
   const [errorMessage, setErrorMessage] = useState(null)
-
-  useEffect(() => {
-    fetchAllBlogs()
-  }, [])
+  const blogFormRef = useRef()
 
   const fetchAllBlogs = () => {
     blogService.getAll().then(blogs => setBlogs( blogs )) 
   }
+  
+  useEffect(fetchAllBlogs, [])
 
   useEffect(() => {
     const loggedUserStored = window.localStorage.getItem('blLoggedUser')
@@ -31,9 +30,29 @@ const App = () => {
     setUser(null)
   }
 
-  if (!user) return(
-    <LoginForm setUser={setUser} />
-  )
+  const notificate = (text, type = false) => {
+    setErrorMessage({ text: text, isError: type })
+    setTimeout(() => setErrorMessage(null), type ? 2000 : 3000)
+  }
+
+  const createNewBlog = async (newBlog) => {
+    try {
+      await blogService.create(newBlog, user.token)
+      notificate(`a new blog ${newBlog.title} by ${newBlog.author} added`)
+      fetchAllBlogs()
+    } catch(error) {
+      console.log(error)
+      if (error.response.data.error) {
+        notificate(error.response.data.error, true)
+      } else {
+        notificate('an error occured while creating a new blog', true)
+      }
+      
+    }
+    blogFormRef.current.toggleVisibility()
+  }
+
+  if (!user) return <LoginForm setUser={setUser} />
 
   return (
     <div>
@@ -46,12 +65,8 @@ const App = () => {
       }
 
       { user && 
-        <Togglable buttonLabel={'new note'}>
-          <BlogForm 
-            fetchAllBlogs={fetchAllBlogs} 
-            user={user}
-            setErrorMessage={setErrorMessage}
-          />
+        <Togglable buttonLabel='new note' ref={blogFormRef} >
+          <BlogForm createNewBlog={createNewBlog} />
         </Togglable>
       }
 
