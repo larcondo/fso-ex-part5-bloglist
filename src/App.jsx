@@ -47,7 +47,6 @@ const App = () => {
       } else {
         notificate('an error occured while creating a new blog', true)
       }
-      
     }
     blogFormRef.current.toggleVisibility()
   }
@@ -62,6 +61,21 @@ const App = () => {
         notificate(e.response.data.error, true)
       } else {
         notificate('an error occured while updating blog', true)
+      }
+    }
+  }
+
+  const removeBlog = async (blog) => {
+    try {
+      await blogService.deleteBlog(blog.id, user.token)
+      notificate(`deleted blog: ${blog.title}`)
+      fetchAllBlogs()
+    } catch(e) {
+      console.log(e)
+      if (e.response.data.error) {
+        notificate(e.response.data.error, true)
+      } else {
+        notificate('an error occured while deleting blog', true)
       }
     }
   }
@@ -87,8 +101,14 @@ const App = () => {
       {blogs
         .sort((a, b) => b.likes - a.likes)
         .map(blog =>
-        <Blog key={blog.id} blog={blog} updateLikes={updateLikes} />
-      )}
+          <Blog 
+            key={blog.id}
+            blog={blog}
+            updateLikes={updateLikes}
+            removeBlog={removeBlog}
+            username={user.username}
+          />
+        )}
     </div>
   )
 }
