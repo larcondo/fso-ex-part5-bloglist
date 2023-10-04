@@ -52,6 +52,20 @@ const App = () => {
     blogFormRef.current.toggleVisibility()
   }
 
+  const updateLikes = async (blog) => {
+    try {
+      await blogService.update(blog.id, { likes: blog.likes + 1 })
+      fetchAllBlogs()
+    } catch(e) {
+      console.log(e)
+      if (e.response.data.error) {
+        notificate(e.response.data.error, true)
+      } else {
+        notificate('an error occured while updating blog', true)
+      }
+    }
+  }
+
   if (!user) return <LoginForm setUser={setUser} />
 
   return (
@@ -71,7 +85,7 @@ const App = () => {
       }
 
       {blogs.map(blog =>
-        <Blog key={blog.id} blog={blog} />
+        <Blog key={blog.id} blog={blog} updateLikes={updateLikes} />
       )}
     </div>
   )
