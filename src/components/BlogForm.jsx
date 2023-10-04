@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import blogService from '../services/blogs'
 
-const BlogForm = ({ fetchAllBlogs, user }) => {
+const BlogForm = ({ fetchAllBlogs, user, setErrorMessage }) => {
   const [title, setTitle] = useState('')
   const [author, setAuthor] = useState('')
   const [url, setUrl] = useState('')
@@ -12,16 +12,24 @@ const BlogForm = ({ fetchAllBlogs, user }) => {
     setUrl('')
   }
 
+  const notificate = (text, type = false) => {
+    setErrorMessage({ text: text, isError: type })
+    setTimeout(() => setErrorMessage(null), type ? 2000 : 3000)
+  }
+
   const handleNewBlog = async (event) => {
     event.preventDefault()
     
     try {
-      const result = await blogService.create({title, author, url}, user.token)
+      await blogService.create({title, author, url}, user.token)
       cleanBlogFormInputs()
-      fetchAllBlogs()
+      notificate(`a new blog ${title} by ${author} added`)
+      fetchAllBlogs()      
     } catch(error) {
       console.log(error)
-      alert(`ERROR: ${error.response.data.error}\n\nhandleNewBlog`)
+      if (error.response.data.error) {
+        notificate(error.response.data.error, true)
+      }
     }
   }
 
