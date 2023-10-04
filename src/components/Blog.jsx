@@ -24,7 +24,7 @@ const Blog = ({ blog }) => {
         <div>
           <p style={{margin: '0'}}>{blog.url}</p>
           <p style={{margin: '0'}}>likes {blog.likes} <button>like</button></p>
-          <p style={{margin: '0'}}>{blog.user.username}</p>
+          <p style={{margin: '0'}}>{blog.user.name}</p>
         </div>
       }
     </div>
