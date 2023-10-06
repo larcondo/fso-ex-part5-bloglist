@@ -32,7 +32,7 @@ const Blog = ({ blog, updateLikes, removeBlog, username }) => {
       { showDetails &&
         <div>
           <p style={{ margin: '0' }}>{blog.url}</p>
-          <p style={{ margin: '0' }}>likes {blog.likes} <button onClick={incLikes}>like</button></p>
+          <p style={{ margin: '0' }}>likes {blog.likes} <button onClick={incLikes} className='like-button'>like</button></p>
           <p style={{ margin: '0' }}>{blog.user.name}</p>
           { blog.user.username === username &&
             <button onClick={remove}>remove</button>
@@ -44,7 +44,7 @@ const Blog = ({ blog, updateLikes, removeBlog, username }) => {
 }
 
 const BlogButton = ({ showDetails, toggle }) => (
-  <button onClick={toggle}>
+  <button onClick={toggle} className='details-button'>
     { showDetails ? 'hide' : 'view'}
   </button>
 )

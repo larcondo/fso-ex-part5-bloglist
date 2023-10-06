@@ -62,3 +62,33 @@ test('checks that the URL and likes are shown', async () => {
   expect(urlElement).toBeDefined()
   expect(likesElement).toBeDefined()
 })
+
+test('like button is clicked twice', async () => {
+  const blog = {
+    title: 'Balanced intangible success',
+    author: 'Steffen Decroix',
+    url: 'root:testingblogs.net',
+    likes: 0,
+    user: 'root'
+  }
+
+  const mockHandler = jest.fn()
+
+  const { container } = render(
+    <Blog
+      blog={blog}
+      updateLikes={mockHandler}
+      removeBlog={() => null}
+      username='dummy'
+    />
+  )
+
+  const user = userEvent.setup()
+  await user.click(container.querySelector('.details-button'))
+
+  const buttonLike = container.querySelector('.like-button')
+  await user.click(buttonLike)
+  await user.click(buttonLike)
+
+  expect(mockHandler.mock.calls).toHaveLength(2)
+})
