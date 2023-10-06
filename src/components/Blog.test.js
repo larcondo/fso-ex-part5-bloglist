@@ -56,7 +56,7 @@ test('checks that the URL and likes are shown', async () => {
   const user = userEvent.setup()
   const button = screen.getByText('view')
   await user.click(button)
-  
+
   const urlElement = screen.getByText('root:testingblogs.net')
   const likesElement = screen.getByText('likes 0')
   expect(urlElement).toBeDefined()
