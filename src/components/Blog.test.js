@@ -1,6 +1,7 @@
 import React from 'react'
 import '@testing-library/jest-dom'
 import { render, screen } from '@testing-library/react'
+import userEvent from '@testing-library/user-event'
 import Blog from './Blog'
 
 test('render contents', () => {
@@ -32,4 +33,32 @@ test('render contents', () => {
   expect(div).not.toHaveTextContent('likes 0')
   expect(div).not.toHaveTextContent('root')
 
+})
+
+test('checks that the URL and likes are shown', async () => {
+  const blog = {
+    title: 'Balanced intangible success',
+    author: 'Steffen Decroix',
+    url: 'root:testingblogs.net',
+    likes: 0,
+    user: 'root'
+  }
+
+  render(
+    <Blog
+      blog={blog}
+      updateLikes={() => null}
+      removeBlog={() => null}
+      username='dummy'
+    />
+  )
+
+  const user = userEvent.setup()
+  const button = screen.getByText('view')
+  await user.click(button)
+  
+  const urlElement = screen.getByText('root:testingblogs.net')
+  const likesElement = screen.getByText('likes 0')
+  expect(urlElement).toBeDefined()
+  expect(likesElement).toBeDefined()
 })
