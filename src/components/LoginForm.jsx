@@ -31,7 +31,7 @@ const LoginForm = ({ setUser }) => {
   }
 
   return(
-    <div>
+    <div id='login-form'>
       <h1>log in to application</h1>
       <Notification message={loginError} />
       <form onSubmit={handleLogin}>
