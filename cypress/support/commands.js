@@ -47,3 +47,27 @@ Cypress.Commands.add('logout', () => {
   localStorage.removeItem('blLoggedUser')
   cy.visit('http://localhost:5173')
 })
+
+Cypress.Commands.add('fillForm', (blog) => {
+  cy.get('.input-title').type(blog.title)
+  cy.get('.input-author').type(blog.author)
+  cy.get('.input-url').type(blog.url)
+  cy.get('#create-button').click()
+})
+
+Cypress.Commands.add('toggleDetails', title => {
+  cy.get('.blog')
+    .contains(title)
+    .within(() => {
+      cy.get('.details-button').click()
+    })
+})
+
+Cypress.Commands.add('clickLike', () => {
+  cy.intercept('PUT', '/api/blogs/*').as('likePut')
+  cy.get('.like-button')
+    .click()
+    .wait('@likePut')
+    .its('response.statusCode')
+    .should('eq', 200)
+})

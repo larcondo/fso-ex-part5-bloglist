@@ -114,7 +114,7 @@ describe('Blog List app', function() {
       cy.get('.blog').should('not.exist')
     })
 
-    it.only('Only the creator can see the delete button', function() {
+    it('Only the creator can see the delete button', function() {
       cy.createBlog({
         title: 'Versatile web-enabled array',
         author: 'Ilsa Fairman',
@@ -136,6 +136,102 @@ describe('Blog List app', function() {
         cy.get('.details-button').click()
         cy.get('.blog-details .remove-button').should('not.exist')
       })
+    })
+
+    it('the blogs are ordered according to likes - OP1', function() {
+      const blogs = [{
+        'title': 'Vision-oriented optimizing portal',
+        'author': 'Mabelle Tobin',
+        'url': 'https://people.com.cn',
+        'likes': 137
+      }, {
+        'title': 'Diverse intangible capacity',
+        'author': 'Kristien O\' Mahony',
+        'url': 'https://ted.com',
+        'likes': 330
+      }, {
+        'title': 'Versatile web-enabled array',
+        'author': 'Ilsa Fairman',
+        'url': 'http://adobe.com',
+        'likes': 261
+      }, {
+        'title': 'Optimized stable database',
+        'author': 'Gustave Gobell',
+        'url': 'https://npr.org',
+        'likes': 19
+      }]
+
+      cy.createBlog(blogs[0])
+      cy.createBlog(blogs[1])
+      cy.createBlog(blogs[2])
+      cy.createBlog(blogs[3])
+      cy.visit('http://localhost:5173')
+      cy.get('.blog').eq(0).should('contain', 'Diverse intangible capacity')
+    })
+
+    it.only('the blogs are ordered according to likes - OP2', function() {
+      const blogs = [{
+        'title': 'Vision-oriented optimizing portal',
+        'author': 'Mabelle Tobin',
+        'url': 'https://people.com.cn',
+        'likes': 137
+      }, {
+        'title': 'Diverse intangible capacity',
+        'author': 'Kristien O\' Mahony',
+        'url': 'https://ted.com',
+        'likes': 330
+      }, {
+        'title': 'Versatile web-enabled array',
+        'author': 'Ilsa Fairman',
+        'url': 'http://adobe.com',
+        'likes': 261
+      }, {
+        'title': 'Optimized stable database',
+        'author': 'Gustave Gobell',
+        'url': 'https://npr.org',
+        'likes': 19
+      }]
+
+      // Order: 2 - 3 - 0 - 1
+      // Likes: 5 - 3 - 2 - 1
+
+      cy.get('button').contains('new blog').click()
+      cy.fillForm(blogs[0])
+      cy.get('button').contains('new blog').click().fillForm(blogs[1])
+      cy.get('button').contains('new blog').click().fillForm(blogs[2])
+      cy.get('button').contains('new blog').click().fillForm(blogs[3])
+
+      // Likes for Blog0
+      cy.toggleDetails(blogs[0].title)
+      cy.clickLike()
+      cy.clickLike()
+      cy.toggleDetails(blogs[0].title)
+
+      // Likes for Blog1
+      cy.toggleDetails(blogs[1].title)
+      cy.clickLike()
+      cy.toggleDetails(blogs[1].title)
+
+      // Likes for Blog2
+      cy.toggleDetails(blogs[2].title)
+      cy.clickLike()
+      cy.clickLike()
+      cy.clickLike()
+      cy.clickLike()
+      cy.clickLike()
+      cy.toggleDetails(blogs[2].title)
+
+      // Likes for Blog3
+      cy.toggleDetails(blogs[3].title)
+      cy.clickLike()
+      cy.clickLike()
+      cy.clickLike()
+      cy.toggleDetails(blogs[3].title)
+
+      cy.get('.blog').eq(0).contains(blogs[2].title)
+      cy.get('.blog').eq(1).contains(blogs[3].title)
+      cy.get('.blog').eq(2).contains(blogs[0].title)
+      cy.get('.blog').eq(3).contains(blogs[1].title)
     })
   })
 
