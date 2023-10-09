@@ -37,7 +37,7 @@ const Blog = ({ blog, updateLikes, removeBlog, username }) => {
           </p>
           <p style={{ margin: '0' }} className='blog-user-name'>{blog.user.name}</p>
           { blog.user.username === username &&
-            <button onClick={remove}>remove</button>
+            <button onClick={remove} className='remove-button'>remove</button>
           }
         </div>
       }

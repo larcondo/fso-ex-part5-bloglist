@@ -67,7 +67,7 @@ describe('Blog List app', function() {
       cy.get('.blog').eq(0).should('not.contain', 'root:testblogs.net/1')
     })
     
-    it.only('Users can like a blog', function() {
+    it('Users can like a blog', function() {
       cy.createBlog({
         title: 'Distributed radical algorithm',
         author: 'Valerye Kermath',
@@ -83,6 +83,29 @@ describe('Blog List app', function() {
         cy.get('.blog-details .blog-likes').should('contain', 'likes 1')
         cy.get('.blog-details .blog-likes').should('not.contain', 'likes 0')
       })
+    })
+
+    it.only('User who create a blog can delete it', function() {
+      cy.createBlog({
+        title: 'Versatile web-enabled array',
+        author: 'Ilsa Fairman',
+        url: 'http://adobe.com',
+        likes: 0
+      })
+      cy.get('.blog').eq(0).as('firstblog')
+      cy.get('@firstblog').within(() => {
+        cy.get('.details-button').should('contain', 'view')
+        cy.get('.details-button').click()
+        cy.get('.blog-details .blog-user-name').should('contain', 'Avram Pease')
+        cy.get('.blog-details .remove-button').should('exist')
+        cy.get('.blog-details .remove-button').click()
+      })
+      cy.get('.notification')
+        .should('contain', 'deleted blog: Versatile web-enabled array')
+        .and('have.css', 'border-style', 'solid')
+        .and('have.css', 'color', 'rgb(0, 128, 0)')
+
+        cy.get('.blog').should('not.exist')
     })
   })
 
