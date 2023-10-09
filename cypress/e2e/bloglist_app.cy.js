@@ -66,6 +66,24 @@ describe('Blog List app', function() {
       cy.get('.blog').eq(0).should('contain', 'This blog is a test blog Test Author')
       cy.get('.blog').eq(0).should('not.contain', 'root:testblogs.net/1')
     })
+    
+    it.only('Users can like a blog', function() {
+      cy.createBlog({
+        title: 'Distributed radical algorithm',
+        author: 'Valerye Kermath',
+        url: 'https://people.com.cn',
+        likes: 0
+      })
+      cy.get('.blog').eq(0).as('firstblog')
+      cy.get('@firstblog').within(() => {
+        cy.get('.details-button').should('contain', 'view')
+        cy.get('.details-button').click()
+        cy.get('.blog-details .blog-likes').should('contain', 'likes 0')
+        cy.get('.like-button').eq(0).click()
+        cy.get('.blog-details .blog-likes').should('contain', 'likes 1')
+        cy.get('.blog-details .blog-likes').should('not.contain', 'likes 0')
+      })
+    })
   })
 
 })

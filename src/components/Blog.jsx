@@ -30,10 +30,12 @@ const Blog = ({ blog, updateLikes, removeBlog, username }) => {
         {blog.title} <b>{blog.author}</b> <BlogButton showDetails={showDetails} toggle={toggle} />
       </div>
       { showDetails &&
-        <div>
-          <p style={{ margin: '0' }}>{blog.url}</p>
-          <p style={{ margin: '0' }}>likes {blog.likes} <button onClick={incLikes} className='like-button'>like</button></p>
-          <p style={{ margin: '0' }}>{blog.user.name}</p>
+        <div className='blog-details'>
+          <p style={{ margin: '0' }} className='blog-url'>{blog.url}</p>
+          <p style={{ margin: '0' }} className='blog-likes'>
+            likes {blog.likes} <button onClick={incLikes} className='like-button'>like</button>
+          </p>
+          <p style={{ margin: '0' }} className='blog-user-name'>{blog.user.name}</p>
           { blog.user.username === username &&
             <button onClick={remove}>remove</button>
           }
