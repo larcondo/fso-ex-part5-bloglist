@@ -6,7 +6,13 @@ describe('Blog List app', function() {
       username: 'apease0',
       password: 'sekret0'
     }
+    const user2 = {
+      name: 'Jane Doe',
+      username: 'janed2015',
+      password: 'blindspot'
+    }
     cy.request('POST', 'http://localhost:3003/api/users', user)
+    cy.request('POST', 'http://localhost:3003/api/users', user2)
     cy.visit('http://localhost:5173')
   })
 
@@ -66,7 +72,7 @@ describe('Blog List app', function() {
       cy.get('.blog').eq(0).should('contain', 'This blog is a test blog Test Author')
       cy.get('.blog').eq(0).should('not.contain', 'root:testblogs.net/1')
     })
-    
+
     it('Users can like a blog', function() {
       cy.createBlog({
         title: 'Distributed radical algorithm',
@@ -85,7 +91,7 @@ describe('Blog List app', function() {
       })
     })
 
-    it.only('User who create a blog can delete it', function() {
+    it('User who create a blog can delete it', function() {
       cy.createBlog({
         title: 'Versatile web-enabled array',
         author: 'Ilsa Fairman',
@@ -105,7 +111,31 @@ describe('Blog List app', function() {
         .and('have.css', 'border-style', 'solid')
         .and('have.css', 'color', 'rgb(0, 128, 0)')
 
-        cy.get('.blog').should('not.exist')
+      cy.get('.blog').should('not.exist')
+    })
+
+    it.only('Only the creator can see the delete button', function() {
+      cy.createBlog({
+        title: 'Versatile web-enabled array',
+        author: 'Ilsa Fairman',
+        url: 'http://adobe.com',
+        likes: 0
+      })
+      cy.get('.blog').eq(0).as('firstblog')
+      cy.get('@firstblog').within(() => {
+        cy.get('.details-button').click()
+        cy.get('.blog-details .remove-button').should('exist')
+        cy.get('.blog-details .remove-button').should('contain', 'remove')
+      })
+
+      cy.logout()
+
+      cy.login({ username: 'janed2015', password: 'blindspot' })
+      cy.get('.blog').eq(0).as('firstblog')
+      cy.get('@firstblog').within(() => {
+        cy.get('.details-button').click()
+        cy.get('.blog-details .remove-button').should('not.exist')
+      })
     })
   })
 

@@ -41,6 +41,9 @@ Cypress.Commands.add('createBlog', (blog) => {
     }
   })
   // .then(() => cy.visit('http://localhost:5173'))
+})
 
-  
+Cypress.Commands.add('logout', () => {
+  localStorage.removeItem('blLoggedUser')
+  cy.visit('http://localhost:5173')
 })
